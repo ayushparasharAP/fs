@@ -1,0 +1,194 @@
+FSLogix
+User profile solution for virtual/physical desktops
+Provides consistent portable profile experience
+
+FUNCTIONS
+Roam user data
+Reduce sign-in time
+Optimize file I/O
+Local profile experience
+Simplify app & gold image management
+
+WHY FSLOGIX IS PREFERRED
+Uses filter driver for VHD mount masking
+Behaves like locally mounted profile
+Supports Teams & OneDrive
+Supports concurrent sessions
+
+LICENSE
+Microsoft 365 E3/E5
+Microsoft 365 A3/A5
+AVD per-user access license
+
+SUPPORTED OS
+Windows 11
+Windows Server 2019/2022/2025
+
+CONTAINERS
+
+1PROFILE CONTAINER
+
+Stores complete user profile in VHD/VHDX
+Full roaming profile solution
+Redirects entire profile
+Includes Office container benefits
+Excludes temp folder & IE crash folder
+Uses Redirection.xml for exclusions
+
+2. ODFC CONTAINER
+
+Stores Office-specific profile data
+Redirects Office profile areas only
+Includes:
+Office activation
+Outlook cache/personalization
+OneDrive
+Skype for Business
+SharePoint (legacy)
+Optional configuration
+
+FSLOGIX AGENT COMPONENTS
+
+PROGRAM FILES\FSLOGIX\APPS
+
+Frx.exe → Command line utility
+
+SERVICES
+Frxsvc.exe → Communicates with drivers/tools & monitors profile
+Frxccds.exe → Handles Cloud Cache
+
+DRIVERS
+Frxdrv.sys → File system & registry redirection
+Frxdrvvt.sys → Advanced profile/ODFC redirection
+Frxccd.sys → Handles Cloud Cache
+
+FSLOGIX PREREQUISITES
+Supported OS
+Eligible license
+Access to storage/file share
+Antivirus exclusions required
+VHD(x) can be local or network based
+
+INSTALLATION PATH
+C:\Program Files\FSLogix\Apps
+
+CLOUD CACHE
+Used for HA/high availability
+Works with Profile & ODFC containers
+Provides resiliency
+Registry paths:
+HKLM\Software\Policies\FSLogix\ODFC
+HKLM\Software\Policies\FSLogix\Profiles
+
+COMMON LOG FILES
+Profile → %ProgramData%\FSLogix\Logs\Profile
+ODFC → %ProgramData%\FSLogix\Logs\ODFC
+Rule Compilation → ProgramData\FSLogix\Logs\Rule Compilation
+Service → ProgramData\FSLogix\Logs\Service
+
+GROUP POLICY TEMPLATES
+Fslogix.admx → %sysvol%\Policy Definition
+Fslogix.adml → %sysvol%\Policy Definition\en-us
+
+PROFILE TYPE
+0 → Normal
+1 → Read/Write
+2 → Read-only
+3 → Try Read/Write else Read-only
+
+VHD DISK COMPACTION
+Runs during sign out
+Reduces VHD size automatically
+Enabled by default
+Depends on DefragSvc
+
+REQUIREMENTS
+Dynamically expandable drive
+Disk compaction enabled
+Container >1GB
+
+FSLOGIX CONNECTION FLOW
+1.User logs into FSLogix machine
+2.Agent checks config & VHD location
+3.VHD attaches if permissions are correct
+4.Profile appears as local profile
+5.VHD detaches at logoff
+
+FSLOGIX VS OTHER PROFILE SOLUTIONS
+Mount/unmount vs copy/paste
+Faster profile loading
+Works on AVD/RDS/Citrix
+Highly scalable
+Office data redirection available
+Supports concurrency
+Easier configuration
+
+FSLOGIX APPLICATION RULE SET
+Rules to show/hide/redirect/customize registry, files, apps, printers
+Created using FSLogix Rule Editor
+
+TYPES OF RULES
+1.Hiding Rule
+Hides files/folders/registry/printers/fonts
+2.Redirection Rule
+Redirects specific data to profile container
+3.Specify Value Rule
+Sets registry values during sign in
+
+IMPORTANT
+Creates:
+.frx file → Rule
+.fxa file → Assignment
+Files must exist on all VMs
+
+OTHER IMPORTANT POINTS
+No support for Entra ID cloud-only accounts
+Rules assigned to users/groups/process/network/computer/env variables
+Default Everyone group = Applies set to No
+Rules applied top to bottom
+
+BASIC TROUBLESHOOTING
+
+PROFILE CONTAINER
+Check Include/Exclude groups
+Verify registry settings & VHD path
+Check file share permissions
+Ensure VHD accessible
+Check existing local profile
+Check disconnected sessions
+Logs → %ProgramData%\FSLogix\Logs\Profile
+
+ODFC CONTAINER
+Check group membership
+Verify registry settings
+Check file share permissions
+Ensure Windows Search running
+Validate Outlook GPO
+Logs → %ProgramData%\FSLogix\Logs\ODFC
+
+FSLOGIX DEPLOYMENT
+
+1. ON-PREMISE
+Install FSLogix
+Configure via GPO/Registry
+Add ADMX/ADML
+Create file share
+Configure VHD path
+Configure optional GPOs
+Add users to Include Group
+Login & profile loads
+
+2. AVD ENTRA JOINED
+Install FSLogix on session host
+Configure GPO/Registry
+Add ADMX/ADML
+Create storage/file share
+Assign SMB Share Contributor
+Configure VHD path
+Login to AVD
+Profile loads
+
+CLEANUP INVALID SESSIONS
+Cleans improperly detached VHD sessions
+Allows successful sign-in
+Path → Software\FSLogix\Apps
